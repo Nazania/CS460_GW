@@ -1,3 +1,6 @@
+//Authors: Nazania Barraza, Ashley Lopez 
+//Team V
+//Project 1
 #include <iostream>
 #include <iomanip>
 #include <fstream>

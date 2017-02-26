@@ -1,3 +1,6 @@
+//Authors: Ashley Lopez, Nazania Barraza
+// Team V
+// Project 1
 #ifndef SYN_H
 #define SYN_H
 

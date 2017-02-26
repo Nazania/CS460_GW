@@ -1,3 +1,6 @@
+//Authors: Nazania Barraza, Ashley Lopez
+//Team V
+//Project 1
 #include <iomanip>
 #include <cstdlib>
 #include "LexicalAnalyzer.h"
@@ -41,7 +44,8 @@ token_type LexicalAnalyzer::GetToken ()
 
   if(input.eof())
     return EOF_T;
-
+//if the data is continuing then make token be what ever this spot is representing in
+//the matrix
   if(datacont != ' ' && datacont != '\n')
     token = checkMatrix(datacont, 0);
   else
@@ -51,13 +55,15 @@ token_type LexicalAnalyzer::GetToken ()
       token = checkMatrix(data, 0);
     }
   while (token == ENDL_T)
+//while loop formats the ending state while it reads the file
+//this is why the .lst file has what it has in it with the line numbers 
     {
       listing << linenum << ": " << line;
       linenum++;
       line = "";
       token = checkMatrix(datacont, 0);
     }
-
+//it grabs the token 
   return token;
 }
 
@@ -95,12 +101,15 @@ token_type LexicalAnalyzer::checkMatrix(char c, int oldstate)
 		     {8.1,8.1,8.1,8.1,8.1,8.1,8.1,8.1,8.1,8.1,7.0,8.1,8.1,8.1,8.1,8.1,8.1,8.1,8.0,8.1,8.1,8.1}};
 
   float newstate = 0.0;
-
+//takes the input from the input file and then stores the char in pos
+//if this position ends up being negative 1 it will error out since that doesnt
+//exist 
   pos = theChar(c);
   if(pos == -1)
     return ERROR_T;
+  // new state now becomes the number that is found in the matrix with this info
   newstate = m[oldstate][pos];
-  
+  //how to handle the different states in the matrix and what it should do when it comes across one of theses things 
   if(isEndState0(newstate) == true)
     {
       datacont = ' ';
@@ -172,28 +181,28 @@ int LexicalAnalyzer::theChar(char c)
 }
 
 bool LexicalAnalyzer::isNumber(char c)
-{
+{//checks to see if the analyzer is getting a number 
   if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9')
     return true;
   return false;
 }
 
 bool LexicalAnalyzer::isCapital(char c)
-{
+{//checks to see if the analyzer is getting a capital letter and then returns true or false depending on the situation 
   if (c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F' || c == 'G' || c == 'H' || c == 'I' || c == 'J' || c == 'K' || c == 'L' || c == 'M' || c == 'N' || c == 'O' || c == 'P' || c == 'Q' || c == 'R' || c == 'S' || c == 'T' || c == 'U' || c == 'V' || c == 'W' || c == 'X' || c == 'Y' || c == 'Z')
     return true;
   return false;
 }
 
 bool LexicalAnalyzer::isLowerCase(char c)
-{
+{//checks to see if it is a lower case letter. then returns true or false to help the code run smoothly like the previous 2 functions 
   if (c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' || c == 'g' || c == 'h' || c == 'i' || c == 'j' || c == 'k' || c == 'l' || c == 'm' || c == 'n' || c == 'o' || c == 'p' || c == 'q' || c == 'r' || c == 's' || c == 't' || c == 'u' || c == 'v' || c == 'w' || c == 'x' || c == 'y' || c == 'z')
     return true;
   return false;
 }
 
 bool LexicalAnalyzer::isEndState0(float n)
-{
+{//if the number that it comes across in the matrix is 0.0 then return true 
   float check = n - float(int(n));
   if(check == 0.0)
     return true;
@@ -201,7 +210,7 @@ bool LexicalAnalyzer::isEndState0(float n)
 }
 
 bool LexicalAnalyzer::isEndState1(float n)
-{
+{// if the number that it finds has a .1 value it will return true or false for EndState1
   float check = n - float(int(n));
   if(check == 0.1 || check == (-0.1))
     return true;
@@ -209,7 +218,7 @@ bool LexicalAnalyzer::isEndState1(float n)
 }
 
 bool LexicalAnalyzer::isContState(float n)
-{
+{//if the number in the matrix contains a .2 then it is still continuing with the current lexeme 
   float check = n - float(int(n));
   if(check == 0.2)
     return true;
