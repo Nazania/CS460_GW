@@ -43,10 +43,7 @@ token_type LexicalAnalyzer::GetToken ()
   char data = ' ';
 
   if(input.eof())
-    {
-      listing << "There are " << errors << " in this file." << endl;
-      return EOF_T;
-    }
+    return EOF_T;
 //if the data is continuing then make token be what ever this spot is representing in
 //the matrix
   if(datacont != ' ' && datacont != '\n')
@@ -67,9 +64,6 @@ token_type LexicalAnalyzer::GetToken ()
       token = checkMatrix(datacont, 0);
     }
 //it grabs the token 
-  if(token == ERROR_T)
-    errors++;
-  
   return token;
 }
 
