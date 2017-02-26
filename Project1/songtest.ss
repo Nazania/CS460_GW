@@ -28,3 +28,5 @@ asdfkha
 oajsdfjkhasdflk
 adfjkjak;df'afj
 
+
+ERRORS: 1 the semicolon

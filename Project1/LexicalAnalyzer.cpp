@@ -8,7 +8,7 @@
 using namespace std;
 
 //static string token_names[] = { "EOF_T" };
-static string token_names[] = {	"ERROR_T", "MINUS_T", "NUMLIT_T", "PLUS_T", "IDKEY_T", "LISTOP_T", "EQUALTO_T", "GTE_T", "GT_T", "LTE_T", "LT_T", "MULT_T", "DIV_T", "LPAREN_T", "RPAREN_T", "QUOTE_T",  "EOF_T" }; 
+static string token_names[] = {	"ERROR_T", "MINUS_T", "NUMLIT_T", "PLUS_T", "IDKEY_T", "LISTOP_T", "EQUALTO_T", "GTE_T", "GT_T", "LTE_T", "LT_T", "MULT_T", "DIV_T", "LPAREN_T", "RPAREN_T", "QUOTE_T",  "EOF_T" };
 
 LexicalAnalyzer::LexicalAnalyzer (char * filename)
 { // This function will initialize the lexical analyzer class
@@ -43,33 +43,43 @@ token_type LexicalAnalyzer::GetToken ()
   char data = ' ';
 
   if(input.eof())
-    {
+    {// new problem, errors are incrementing wrong, its too many or correct need to fix
       listing << "There are " << errors << " in this file." << endl;
+	cout << errors << "in input.eof first if statement " << endl;
       return EOF_T;
     }
 //if the data is continuing then make token be what ever this spot is representing in
 //the matrix
   if(datacont != ' ' && datacont != '\n')
-    token = checkMatrix(datacont, 0);
+  {// something wrong with this if statement,
+	// supposed to go in here if it is continuing 
+      token = checkMatrix(datacont, 0);
+      cout << errors << "  Errors in if statement 2" << endl;
+  }
   else
     {
       input.get(data);
       line+= data;
       token = checkMatrix(data, 0);
+	cout << errors << "  Errors in the else statement 2" << endl;
     }
   while (token == ENDL_T)
 //while loop formats the ending state while it reads the file
-//this is why the .lst file has what it has in it with the line numbers 
+//this is why the .lst file has what it has in it with the line numbers
     {
       listing << linenum << ": " << line;
       linenum++;
       line = "";
       token = checkMatrix(datacont, 0);
+	cout << errors << "in while loop for token == ENDL_T" << endl;
     }
-//it grabs the token 
+//it grabs the token
   if(token == ERROR_T)
+  {// thinks the '?' is an error even when it is attached to a word 
+    cout << errors << " before incrementing the errors variable" << endl;
     errors++;
-  
+    cout << errors<< " incrementing if statement that keeps track of errors" << endl;	
+  }
   return token;
 }
 
@@ -109,33 +119,40 @@ token_type LexicalAnalyzer::checkMatrix(char c, int oldstate)
   float newstate = 0.0;
 //takes the input from the input file and then stores the char in pos
 //if this position ends up being negative 1 it will error out since that doesnt
-//exist 
+//exist
   pos = theChar(c);
+	cout << c << endl;
+	// old state never changes 
+	cout << oldstate << endl;
   if(pos == -1)
     return ERROR_T;
   // new state now becomes the number that is found in the matrix with this info
   newstate = m[oldstate][pos];
-  //how to handle the different states in the matrix and what it should do when it comes across one of theses things 
+  //how to handle the different states in the matrix and what it should do when it comes across one of theses things
   if(isEndState0(newstate) == true)
     {
       datacont = ' ';
+	cout << newstate << endl;
+	cout << errors << " check matrix if statement one " << endl; 
       return token_type(int(newstate)); /// might be just int(newstate)
     }
   else if(isEndState1(newstate) == true)
     {
       datacont = c;
       lexeme = c;
+	cout << newstate<< endl;
       return token_type(int(newstate));
     }
   else if(isContState(newstate) == true)
     {
       datacont = ' ';
       lexeme+= c;
+	cout << newstate << endl;
       //input.get(c);
       return checkMatrix(c, int(newstate));
     }
-  return token;// EOF_T actually stopped it after the first letter 
-  
+  return token;// EOF_T actually stopped it after the first letter
+
 }
 
 int LexicalAnalyzer::theChar(char c)
@@ -187,28 +204,28 @@ int LexicalAnalyzer::theChar(char c)
 }
 
 bool LexicalAnalyzer::isNumber(char c)
-{//checks to see if the analyzer is getting a number 
+{//checks to see if the analyzer is getting a number
   if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9')
     return true;
   return false;
 }
 
 bool LexicalAnalyzer::isCapital(char c)
-{//checks to see if the analyzer is getting a capital letter and then returns true or false depending on the situation 
+{//checks to see if the analyzer is getting a capital letter and then returns true or false depending on the situation
   if (c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F' || c == 'G' || c == 'H' || c == 'I' || c == 'J' || c == 'K' || c == 'L' || c == 'M' || c == 'N' || c == 'O' || c == 'P' || c == 'Q' || c == 'R' || c == 'S' || c == 'T' || c == 'U' || c == 'V' || c == 'W' || c == 'X' || c == 'Y' || c == 'Z')
     return true;
   return false;
 }
 
 bool LexicalAnalyzer::isLowerCase(char c)
-{//checks to see if it is a lower case letter. then returns true or false to help the code run smoothly like the previous 2 functions 
+{//checks to see if it is a lower case letter. then returns true or false to help the code run smoothly like the previous 2 functions
   if (c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' || c == 'g' || c == 'h' || c == 'i' || c == 'j' || c == 'k' || c == 'l' || c == 'm' || c == 'n' || c == 'o' || c == 'p' || c == 'q' || c == 'r' || c == 's' || c == 't' || c == 'u' || c == 'v' || c == 'w' || c == 'x' || c == 'y' || c == 'z')
     return true;
   return false;
 }
 
 bool LexicalAnalyzer::isEndState0(float n)
-{//if the number that it comes across in the matrix is 0.0 then return true 
+{//if the number that it comes across in the matrix is 0.0 then return true
   float check = n - float(int(n));
   if(check == 0.0)
     return true;
@@ -224,22 +241,24 @@ bool LexicalAnalyzer::isEndState1(float n)
 }
 
 bool LexicalAnalyzer::isContState(float n)
-{//if the number in the matrix contains a .2 then it is still continuing with the current lexeme 
+{//if the number in the matrix contains a .2 then it is still continuing with the current lexeme
+	cout << n << endl;
   float check = n - float(int(n));
+	cout << check << " after the math " << endl;
   if(check == 0.2)
     return true;
   return false;
 }
 
 string LexicalAnalyzer::GetTokenName (token_type t) const
-{ // The GetTokenName function returns a string containing the name of the token passed to it. 
+{ // The GetTokenName function returns a string containing the name of the token passed to it.
   //return token_names[t];
   return "";
 }
 
 string LexicalAnalyzer::GetLexeme () const
 {
-	// This function will return the lexeme found by the most recent call to 
+	// This function will return the lexeme found by the most recent call to
 	// the get_token function
   return lexeme;
   //return "";
@@ -251,5 +270,5 @@ void LexicalAnalyzer::ReportError (const string & msg)
   debug << lexeme << setw(10) << token_names[token] << endl;
 }
 
-  
-      
+
+

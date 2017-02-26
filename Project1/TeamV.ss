@@ -7,3 +7,5 @@ Is -5. a number? -5. >= -5 it is not null?
 for(int i = 0' i < 9' i++)
 (sum = a + i')
 consifwhileandornotdefinecarcdrnumber?symbol?list?zero?null?char?string?+-/*=>=<=><()'
+
+ERRORS: 1 maybe 4 if it doesnt like the numbers or i getting followed by the quote 
